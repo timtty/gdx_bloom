@@ -2,6 +2,7 @@ package lifecycle;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.math.Vector3;
 import core.Particle;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Tim on 12/25/2014.
@@ -26,6 +29,8 @@ public class Scene implements ApplicationListener {
     final Vector3 ORIGIN = new Vector3(0, 0, 0);
 
     ArrayList<Particle> particles;
+
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
     public void create() {
@@ -58,6 +63,53 @@ public class Scene implements ApplicationListener {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        Gdx.input.setInputProcessor(new InputProcessor() {
+            @Override
+            public boolean mouseMoved(int i, int i1) {
+                for (Particle particle: particles) {
+                    particle.setPosition(new Vector3(i, i1, 0));
+                }
+                //logger.log(Level.INFO, "MOUSE: 1 => " + i + ", 2 => " + i1);
+                return false;
+            }
+
+            @Override
+            public boolean keyDown(int i) {
+                return false;
+            }
+
+            @Override
+            public boolean keyUp(int i) {
+                //logger.log(Level.INFO, "KEY: " + i);
+                return false;
+            }
+
+            @Override
+            public boolean keyTyped(char c) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDown(int i, int i1, int i2, int i3) {
+                return false;
+            }
+
+            @Override
+            public boolean touchUp(int i, int i1, int i2, int i3) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDragged(int i, int i1, int i2) {
+                return false;
+            }
+
+            @Override
+            public boolean scrolled(int i) {
+                return false;
+            }
+        });
+
         this.particles.get(0).update();
 
         this.renderer.begin(this.cam);
@@ -65,6 +117,8 @@ public class Scene implements ApplicationListener {
         this.particles.get(0).bloom(renderer, environment);
         this.renderer.end();
     }
+
+
 
     @Override
     public void pause() {

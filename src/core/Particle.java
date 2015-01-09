@@ -18,7 +18,7 @@ public class Particle {
     ModelInstance instance;
     ModelInstance[] layers;
     float bloom_intensity = 1f;
-    int bloom_max = 50;
+    int bloom_max = 25;
     boolean bloom_shine = true;
 
     public Particle(Vector3 position, float size) {
@@ -52,15 +52,15 @@ public class Particle {
 
     public void update() {
         if (bloom_shine) {
-            bloom_intensity += 0.3f;
+            bloom_intensity += 0.13f;
             if (bloom_intensity > bloom_max) {
                 bloom_intensity = bloom_max;
                 bloom_shine = false;
             }
         } else {
-            bloom_intensity -= 0.3f;
-            if (bloom_intensity < 1) {
-                bloom_intensity = 1;
+            bloom_intensity -= 0.13f;
+            if (bloom_intensity < 3) {
+                bloom_intensity = 3;
                 bloom_shine = true;
             }
         }
@@ -80,6 +80,14 @@ public class Particle {
 
     public Vector3 getPosition() {
         return position;
+    }
+
+    public void setPosition(Vector3 newPosition) {
+        this.position = newPosition;
+        for (ModelInstance layer: layers) {
+            layer.nodes.get(0).translation.set(position);
+            layer.calculateTransforms();
+        }
     }
 
     public Model getModel() {
